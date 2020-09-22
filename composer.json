@@ -1,0 +1,20 @@
+{
+    "name": "swoole/bin",
+    "authors": [
+        {
+            "name": "潘亮",
+            "email": "pltruenine@163.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "bin"
+        },
+        "files": [
+            "helpers.php"
+        ]
+    }
+}
