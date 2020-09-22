@@ -24,7 +24,7 @@ function send_email($content, $email_address)
 {
     $config = [
         'username'    => 'pltruenine@163.com',
-        'password'    => 'qwertyasdf1',
+        'password'    => 'xxxx',
         'host'        => 'smtp.163.com',
         'smtp_secure' => 'ssl',
         'port'        => 465,
