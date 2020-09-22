@@ -16,17 +16,19 @@ namespace app;
  */
 class Log
 {
-    protected $fileName = '/send_mail.log';
     protected $fileUrl;
+    protected $fileName;
     protected $log;
 
     public function __construct()
     {
-        $log = __DIR__.'/log';
+        $this->log = __DIR__.'/log/'.date('ym');
 
-        if(!empty($log)) {
-            $this->log = $log;
-            $this->fileUrl = $log.$this->fileName;
+        $this->fileName = '/'.date('d').'_send_mail.log';
+
+        if(!empty($this->log)) {
+
+            $this->fileUrl = $this->log.$this->fileName;
         }else{
             $this->log = LOG;
             $this->fileUrl = LOG.$this->fileName;
@@ -38,10 +40,16 @@ class Log
      */
     public function write($param)
     {
-        if(!file_exists($this->fileName)) {
+        if(!file_exists($this->log)) {
+            mkdir($this->log);
+            chmod($this->log,0777);
+
+        }
+        if(!file_exists($this->log.$this->fileName)) {
             touch($this->log.$this->fileName);
             chmod($this->log.$this->fileName,0777);
         }
+
         $data = $this->read();
 
         if(is_null($data)) $data = [];
