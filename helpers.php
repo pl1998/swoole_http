@@ -6,9 +6,6 @@
  * Time: 11:35.
  */
 
-/**
- * 全局辅助函数 支持composer 自动加载.
- */
 
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -22,15 +19,7 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 function send_email($content, $email_address)
 {
-    $config = [
-        'username'    => 'pltruenine@163.com',
-        'password'    => 'xxxx',
-        'host'        => 'smtp.163.com',
-        'smtp_secure' => 'ssl',
-        'port'        => 465,
-        'setfrom'     => 'pltruenine@163.com',
-        'address'     => $email_address,
-    ];
+    $config = require __DIR__.'/config/email.php';
 
     $mail = new PHPMailer();
     $mail->CharSet = 'UTF-8';

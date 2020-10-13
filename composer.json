@@ -7,7 +7,8 @@
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "^6.1"
+        "phpmailer/phpmailer": "^6.1",
+        "vetor/laravel-collect": "^1.1"
     },
     "autoload": {
         "psr-4": {

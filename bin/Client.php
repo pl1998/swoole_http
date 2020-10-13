@@ -30,7 +30,9 @@ class Client
         /**
          * 客户端 服务端端口一致.
          */
-        if (!$this->client->connect('127.0.0.1', 9502, 1)) {
+        $config = require  APP_CONFIG.'/server.php';
+        $config = $config['tcp'];
+        if (!$this->client->connect($config['host'], $config['port'], 1)) {
             return json_encode([
                 'code'    => 500,
                 'err_msg' => '链接异步客户端失败',

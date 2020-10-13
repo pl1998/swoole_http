@@ -20,7 +20,7 @@ class Log
 
     public function __construct()
     {
-        $this->log = __DIR__.'/log/'.date('ym');
+        $this->log = __DIR__.'/log/'.date('Ym');
 
         $this->fileName = '/'.date('d').'_send_mail.log';
 
