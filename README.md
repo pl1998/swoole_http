@@ -13,13 +13,22 @@
 #### 如何启动？
 ```shell script
 
-git clone 
+git clone https://github.com/pl1998/swoole_log.git
 
+cd swoole_log
 
+// 查看是否安装了swoole
 
-//启动http服务
+php --ri swoole 
+
+// 测试环境 laradock
+
+// 启动http服务
+
 php http.php
-//启动tcp服务
+
+// 启动tcp服务
+
 php tcp.php
 ```
 
