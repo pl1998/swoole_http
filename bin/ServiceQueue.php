@@ -17,7 +17,7 @@ class ServiceQueue
 
     public function __construct()
     {
-        $config = require  APP_CONFIG.'/server.php';
+        $config = require APP_CONFIG.'/server.php';
         $config = $config['tcp'];
 
         $this->server = new \Swoole\Server($config['host'], $config['port']);

@@ -30,7 +30,7 @@ class Client
         /**
          * 客户端 服务端端口一致.
          */
-        $config = require  APP_CONFIG.'/server.php';
+        $config = require APP_CONFIG.'/server.php';
         $config = $config['tcp'];
         if (!$this->client->connect($config['host'], $config['port'], 1)) {
             return json_encode([
