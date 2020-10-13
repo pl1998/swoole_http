@@ -2,16 +2,13 @@
 
 namespace app;
 
-require_once 'Log.php';
-require_once APP_DIR.'/helpers.php';
-
 /**
  * Created by PhpStorm
  * User: pl
  * Date: 2020/9/21
  * Time: 10:26.
  */
-class ServiceQueue
+class ServerQueue
 {
     protected $server;
 
@@ -45,6 +42,8 @@ class ServiceQueue
      */
     public function onTask($server, $fd, $from_id, $data)
     {
+        require  APP_DIR.'/helpers.php';
+
         $log = new Log();
         $data = json_decode($data, true);
 

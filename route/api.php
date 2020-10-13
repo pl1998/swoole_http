@@ -15,7 +15,7 @@ return [
       '/api/get_log'
   ],
   'POST' => [
-
+      '/api/get_log'
   ],
   'PUT'  => [
 

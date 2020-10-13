@@ -8,11 +8,8 @@
 require 'vendor/autoload.php';
 
 define('APP_DIR', __DIR__);
-require_once __DIR__.'/helpers.php';
 define('APP_CONFIG',__DIR__.'/config');
 
-
-
-use app\ServiceQueue;
-
-new ServiceQueue();
+use app\ServerQueue;
+echo "tcp服务启动成功--";
+new ServerQueue();
