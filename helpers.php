@@ -6,7 +6,6 @@
  * Time: 11:35.
  */
 
-
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
