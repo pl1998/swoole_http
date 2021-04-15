@@ -3,32 +3,32 @@
  * Created By PhpStorm.
  * User : Latent
  * Date : 2021/4/15
- * Time : 11:07 上午
+ * Time : 3:54 下午
  **/
 
 namespace app\pool;
 
 
-use Swoole\Database\MysqliConfig;
-use Swoole\Database\MysqliPool;
+use Swoole\Database\RedisConfig;
+use Swoole\Database\RedisPool;
 
-
-class Mysqli implements Pool
+class Redis implements Pool
 {
     private static $instance;
 
-    protected $pool;
+    protected $redis;
+    protected $db;
 
     public function __construct(array $config)
     {
-        $this->pool = new MysqliPool((new MysqliConfig())
+        $this->redis = new RedisPool((new RedisConfig())
             ->withHost($config['host'])
             ->withPort($config['port'])
-            ->withDbName($config['dbname'])
-            ->withCharset($config['coding'])
-            ->withUsername($config['username'])
-            ->withPassword($config['password'])
+            ->withAuth($config['password'])
+            ->withDbIndex($config['db'])
+            ->withTimeout($config['timeout'])
             ,$config['size']);
+
     }
 
     public static function getInstance($config=[])
@@ -39,14 +39,22 @@ class Mysqli implements Pool
         return static::$instance;
     }
 
+    /**
+     * 连接
+     */
     public function conn()
     {
-        return $this->pool->get();
+        $this->db =  $this->redis->get();
+
     }
 
-    public function close(object $pdo)
+    /**
+     * 归还
+     * @return bool
+     */
+    public function close(object $db)
     {
-        return $this->pool->put($pdo);
-    }
+        $this->redis->put($db);
 
+    }
 }

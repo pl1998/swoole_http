@@ -15,6 +15,14 @@ return [
         'username'=>'root',
         'password'=>'root',
         'size'=>60,
+    ],
+    'redis' =>[
+        'host'=>'127.0.0.1',
+        'port'=>6379,
+        'password'=>'123456',
+        'db'=>0,
+        'size'=>15,
+        'timeout'=>1,
     ]
 ];
 

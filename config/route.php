@@ -13,7 +13,7 @@ return [
       '/favicon.ico'=>false,
       '/'=>[\app\controller\IndexController::init(),'index'],
       '/api/create'=>[\app\controller\IndexController::init(),'create'],
-      '/api/test'=>[\app\controller\TestController::init(),'test'],
+      '/api/tests'=>[\app\controller\TestController::init(),'tests'],
   ],
   'POST' => [
 

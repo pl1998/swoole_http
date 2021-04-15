@@ -19,7 +19,7 @@
 │   ├── pool
 │   │   ├── DB.php
 │   │   ├── DbPool.php
-│   │   ├── Mysql.php
+│   │   ├── Pool.php
 │   │   ├── Mysqli.php
 │   │   ├── PDO.php
 │   │   └── RedisPool.php
@@ -41,7 +41,7 @@
 ├── http.php
 ├── tcp.php
 ├── test
-├── test.php
+├── tests.php
 └── view
     ├── 404.html
     ├── echarts.html
@@ -64,8 +64,8 @@ get clone https://github.com/pl1998/swoole_http.git
 php http.php
 ```   
 
-#### 全局辅助函数文件 `helpers.php 通过`composer.json`文件 中`autoload` 实现了自动加载
-    * 主要实现一些全局函数 读取视图函数 view()  读取配置函数 config()
+> 全局辅助函数文件 `helpers.php 通过`composer.json`文件 中`autoload` 实现了自动加载
+> 主要实现一些全局函数 读取视图函数 view()  读取配置函数 config()
 ```json
     ...
    "autoload": {
@@ -83,8 +83,6 @@ php http.php
 ```shell script
 ├── config
 │   ├── database.php //数据库配置
-│   ├── email.php    //邮件配置
-│   ├── log.php      //日志驱动
 │   ├── route.php    //路由文件
 │   └── server.php  //tcp http 配置以及端口
 ```
@@ -99,7 +97,7 @@ return [
   'GET'  => [
       '/favicon.ico'=>false,
       //访问路径 => 实例控制器 方法名 
-      '/api/test'=>[\app\controller\TestController::init(),'test'],
+      '/api/tests'=>[\app\controller\TestController::init(),'tests'],
   ],
   'POST' => [
 
@@ -160,15 +158,33 @@ class TestController
     }
 }
 ```
+
 #### 启动服务器
 ```shell script
 php http.php
 ---------------
 $ php http.php 
 0.0.0.0:9501
+````
 
 
+#### 我们来跑hello world
+
+```php
+ public function test(object $request,object $response)
+    {
+        $response->header('Content-Type', 'text/html');
+        $response->end("hello world!");
+  }
 ```
+
+
+#### 这性能逼近gRPC(3万多)
+![file](./docs/WechatIMG257.png)
+
+
+#### 测试插入数据并启动重启服务器
+
 #### 浏览器访问[0.0.0.0:9501](http://0.0.0.0:9501/api/test) 尝试多请求几次
 
 ![file](./docs/WechatIMG253.png)
@@ -216,24 +232,11 @@ return [
     ]
 ];
 ```
-#### 我们来跑hello world
-
-```php
- public function test(object $request,object $response)
-    {
-        $response->header('Content-Type', 'text/html');
-        $response->end("hello world!");
-  }
-```
-
-
-#### 这性能只比gRPC(3万多)差一万多
-![file](./docs/WechatIMG257.png)
 
 
 #### 连接池调大继续测试
 
 ![file](./docs/WechatIMG258.png)
 #### 结论
->`Latency`参数明显高了 但`Requests/sec` 只提高了40个的样子
+>`Latency`参数明显高一点了 但`Requests/sec` 只提高了40个的样子 如果用协程来跑性能应该更高
 

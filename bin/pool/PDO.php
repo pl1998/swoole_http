@@ -12,7 +12,7 @@ namespace app\pool;
 use Swoole\Database\PDOConfig;
 use Swoole\Database\PDOPool;
 
-class PDO implements Mysql
+class PDO implements Pool
 {
     private static $instance;
 

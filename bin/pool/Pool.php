@@ -9,7 +9,7 @@
 namespace app\pool;
 
 
-interface Mysql
+interface Pool
 {
     public function conn();
 
