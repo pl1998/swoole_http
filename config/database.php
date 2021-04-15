@@ -14,7 +14,7 @@ return [
         'dbname'=>'swoole',
         'username'=>'root',
         'password'=>'root',
-        'size'=>15,
+        'size'=>60,
     ]
 ];
 

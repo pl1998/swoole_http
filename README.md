@@ -196,12 +196,44 @@ wrk -t4 -c50 -d30 http://127.0.0.1:9501/api/test
 
 ![file](./docs/WechatIMG254.png)
 
-
-
 ![file](./docs/WechatIMG255.jpeg)
-
-
 
 #### 此时已经插入了3万多条数据了
 
 ![file](./docs/WechatIMG256.png)
+
+#### 感觉不太行 可能是连接池的问题
+```php
+return [
+    'mysql' =>[
+        'host'=>'127.0.0.1',
+        'port'=>3306,
+        'coding'=>'utf8mb4',
+        'dbname'=>'swoole',
+        'username'=>'root',
+        'password'=>'root',
+        'size'=>15, //默认只给连接池15个连接
+    ]
+];
+```
+#### 我们来跑hello world
+
+```php
+ public function test(object $request,object $response)
+    {
+        $response->header('Content-Type', 'text/html');
+        $response->end("hello world!");
+  }
+```
+
+
+#### 这性能只比gRPC(3万多)差一万多
+![file](./docs/WechatIMG257.png)
+
+
+#### 连接池调大继续测试
+
+![file](./docs/WechatIMG258.png)
+#### 结论
+>`Latency`参数明显高了 但`Requests/sec` 只提高了40个的样子
+

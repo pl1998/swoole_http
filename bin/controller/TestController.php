@@ -30,7 +30,6 @@ class TestController
         //业务逻辑
         $db = new DbPool();
 
-
         $id = $db->table('users')->insert([
             'name'=>'latent',
             'password'=>'',
@@ -43,8 +42,10 @@ class TestController
         ]);
 
         $response->header('Content-Type','application/json');
+
         $response->end(success([
             'id'=>$id
         ],'插入成功'));
+
     }
 }
