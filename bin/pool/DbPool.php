@@ -9,6 +9,8 @@ declare(strict_types=1);
 namespace app\pool;
 
 
+use Swoole\Coroutine;
+
 /**
  * Class DbPool
  * @package app\pool
@@ -19,6 +21,7 @@ class DbPool
     protected $pool;
     private $db;
     protected $tables;
+    protected $transaction_status = false;
 
     public function __construct()
     {
@@ -32,17 +35,32 @@ class DbPool
         }
     }
 
+    /**
+     * 去连接池拿实例
+     */
     public function getConn()
     {
-       $this->db =  $this->pool->conn();
+        if($this->transaction_status==false){
+            $this->db =  $this->pool->conn();
+        }
     }
 
+    /**
+     * 引入表
+     * @param string $table
+     * @return $this
+     */
     public function table(string $table)
     {
         $this->tables = $table;
         return $this;
     }
 
+    /**
+     * 数据插入
+     * @param array $array
+     * @return int
+     */
     public function insert(array $array) :int
     {
         $this->getConn();
@@ -60,10 +78,77 @@ class DbPool
         return $ret;
     }
 
-    public function release(object $db)
+    /**
+     * 开启事务
+     */
+    public function beginTransaction()
     {
-        $this->pool->close($db);
-        return true;
+        if($this->transaction_status){
+            throw new \RuntimeException('事务嵌套');
+        }
+        $this->getConn();
+        $this->db->beginTransaction();
+        $this->transaction_status=true;
+        //协程关闭之前(即协程函数执行完毕时) 进行调用
+//        Coroutine::defer(function (){
+//           if($this->transaction_status){
+//               $this->rollBack();
+//           }
+//        });
     }
 
+    /**
+     * 事务执行
+     */
+    public function commit()
+    {
+        $this->getConn();
+        $this->db->commit();
+        $this->transaction_status = false;
+        $this->release($this->db);
+    }
+
+    /**
+     * 回退
+     */
+    public function rollBack()
+    {
+        $this->getConn();
+        $this->db->rollBack();
+        $this->transaction_status = false;
+        $this->release($this->db);
+    }
+
+
+    /**
+     * 执行sql查询
+     * @param string $query
+     * @return bool
+     */
+    public function query(string $query) :bool
+    {
+        $this->getConn();
+
+        $statement = $this->db->prepare($query);
+
+        $result = $statement->execute();
+
+        $this->release($this->db);
+
+        return $result;
+    }
+
+    /**
+     * 归还连接
+     * @param object $db
+     * @return bool
+     */
+    public function release(object $db)
+    {
+        if($this->transaction_status==false){
+            $this->pool->close($db);
+            return true;
+        }
+        return  false;
+    }
 }

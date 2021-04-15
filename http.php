@@ -9,7 +9,7 @@ if(version_compare(PHP_VERSION,'7.3.0', '<')){
     echo '当前版本为'.phpversion().'小于7.3.0';exit();
 }
 require 'vendor/autoload.php';
-define('APP_PAHT',  __DIR__);
+define('APP_PATH',  __DIR__);
 
 use app\HttpServer;
 $http   = new HttpServer();

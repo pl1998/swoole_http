@@ -34,8 +34,12 @@ class IndexController
     {
         //业务逻辑
         $db = new DbPool();
+
+        //开启事务
+        $db->beginTransaction();
+
         $id = $db->table('users')->insert([
-            'name'=>'pl2',
+            'name'=>'latent',
             'password'=>'',
             'avatar'=>'',
             'email'=>'pltruenine@163.com',
@@ -44,6 +48,11 @@ class IndexController
             'uid'=>'56895',
             'age'=>22,
         ]);
+
+        //事务回退
+        $db->rollBack();
+
+
         $response->header('Content-Type','application/json');
         $response->end(success([
             'id'=>$id
