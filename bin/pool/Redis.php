@@ -17,10 +17,11 @@ class Redis implements Pool
     private static $instance;
 
     protected $redis;
-    protected $db;
+
 
     public function __construct(array $config)
     {
+
         $this->redis = new RedisPool((new RedisConfig())
             ->withHost($config['host'])
             ->withPort($config['port'])
@@ -44,7 +45,7 @@ class Redis implements Pool
      */
     public function conn()
     {
-        $this->db =  $this->redis->get();
+       return  $this->redis->get();
 
     }
 

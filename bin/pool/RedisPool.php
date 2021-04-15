@@ -38,4 +38,12 @@ class RedisPool
         $this->pool->close($db);
     }
 
+    public function get(string $key)
+    {
+        $this->getConn();
+        $data = $this->db->get($key);
+        $this->release($this->db);
+        return json_decode($data,true);
+    }
+
 }

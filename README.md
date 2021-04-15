@@ -1,4 +1,4 @@
-## 基于swoole搭建的一个高性能的HTTP服务器
+基于swoole搭建的一个高性能的HTTP服务器
 
 #### 目录结构
 ```shell script

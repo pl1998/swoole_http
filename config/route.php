@@ -14,6 +14,7 @@ return [
       '/'=>[\app\controller\IndexController::init(),'index'],
       '/api/create'=>[\app\controller\IndexController::init(),'create'],
       '/api/tests'=>[\app\controller\TestController::init(),'tests'],
+      '/api/test_redis'=>[\app\controller\TestController::init(),'testRedis'],
   ],
   'POST' => [
 

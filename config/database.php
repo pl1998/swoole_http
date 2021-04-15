@@ -19,7 +19,7 @@ return [
     'redis' =>[
         'host'=>'127.0.0.1',
         'port'=>6379,
-        'password'=>'123456',
+        'password'=>'',
         'db'=>0,
         'size'=>15,
         'timeout'=>1,
