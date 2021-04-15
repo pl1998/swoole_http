@@ -2,13 +2,12 @@
     "name": "swoole/bin",
     "authors": [
         {
-            "name": "潘亮",
+            "name": "latent",
             "email": "pltruenine@163.com"
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "^6.1",
-        "vetor/laravel-collect": "^1.1"
+        "phpmailer/phpmailer": "^6.1"
     },
     "autoload": {
         "psr-4": {

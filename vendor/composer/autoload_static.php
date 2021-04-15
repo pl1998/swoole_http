@@ -7,8 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         'c1b695488e28e13d50da5db31a54b640' => __DIR__ . '/../..' . '/helpers.php',
     );
 
@@ -17,34 +15,9 @@ class ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a
         array (
             'app\\' => 4,
         ),
-        'V' => 
-        array (
-            'Vetor\\Laravel\\Collect\\' => 22,
-            'Vetor\\Contracts\\Collect\\' => 24,
-        ),
-        'S' => 
-        array (
-            'Symfony\\Polyfill\\Mbstring\\' => 26,
-            'Symfony\\Contracts\\Translation\\' => 30,
-            'Symfony\\Component\\Translation\\' => 30,
-        ),
         'P' => 
         array (
-            'Psr\\SimpleCache\\' => 16,
-            'Psr\\Container\\' => 14,
             'PHPMailer\\PHPMailer\\' => 20,
-        ),
-        'I' => 
-        array (
-            'Illuminate\\Support\\' => 19,
-            'Illuminate\\Database\\' => 20,
-            'Illuminate\\Contracts\\' => 21,
-            'Illuminate\\Container\\' => 21,
-        ),
-        'D' => 
-        array (
-            'Doctrine\\Inflector\\' => 19,
-            'Doctrine\\Common\\Inflector\\' => 26,
         ),
     );
 
@@ -53,76 +26,14 @@ class ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a
         array (
             0 => __DIR__ . '/../..' . '/bin',
         ),
-        'Vetor\\Laravel\\Collect\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/vetor/laravel-collect/src',
-        ),
-        'Vetor\\Contracts\\Collect\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/vetor/laravel-collect/contracts',
-        ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
-        ),
-        'Symfony\\Contracts\\Translation\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
-        ),
-        'Symfony\\Component\\Translation\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/translation',
-        ),
-        'Psr\\SimpleCache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
-        ),
-        'Psr\\Container\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/container/src',
-        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
-        'Illuminate\\Support\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/illuminate/support',
-        ),
-        'Illuminate\\Database\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/illuminate/database',
-        ),
-        'Illuminate\\Contracts\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/illuminate/contracts',
-        ),
-        'Illuminate\\Container\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/illuminate/container',
-        ),
-        'Doctrine\\Inflector\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
-        ),
-        'Doctrine\\Common\\Inflector\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
-        ),
     );
 
-    public static $fallbackDirsPsr4 = array (
-        0 => __DIR__ . '/..' . '/nesbot/carbon/src',
-    );
-
-    public static $prefixesPsr0 = array (
-        'U' => 
-        array (
-            'UpdateHelper\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/kylekatarnls/update-helper/src',
-            ),
-        ),
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -130,8 +41,7 @@ class ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit9798432c5295cb4cff50c0d8f03bc85a::$classMap;
 
         }, null, ClassLoader::class);
     }

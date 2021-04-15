@@ -1,84 +1,43 @@
 <?php
 /**
- * Created by PhpStorm
- * User: pl
- * Date: 2020/9/21
- * Time: 13:56.
- */
+ * Created By PhpStorm.
+ * User : Latent
+ * Date : 2021/4/13
+ * Time : 6:10 下午
+ **/
 
 namespace app;
 
-/**
- * 文件日志类
- * Class Log.
- */
+
 class Log
 {
-    protected $fileUrl;
-    protected $fileName;
-    protected $log;
+
+    private static $log;
 
     public function __construct()
     {
-        $this->log = __DIR__.'/log/'.date('Ym');
 
-        $this->fileName = '/'.date('d').'_send_mail.log';
-
-        if (!empty($this->log)) {
-            $this->fileUrl = $this->log.$this->fileName;
-        } else {
-            $this->log = LOG;
-            $this->fileUrl = LOG.$this->fileName;
+    }
+    public static function init()
+    {
+        if(is_null(static::$log)) {
+            static::$log = new self();
         }
+        return static::$log;
+
     }
 
     /**
-     * 文件数据写入.
+     * 日志写入
+     * @param string $msg
+     * @param array $log
      */
-    public function write($param)
+    public function write(string $msg,array $log)
     {
-        if (!file_exists($this->log)) {
-            mkdir($this->log);
-            chmod($this->log, 0777);
-        }
-        if (!file_exists($this->log.$this->fileName)) {
-            touch($this->log.$this->fileName);
-            chmod($this->log.$this->fileName, 0777);
-        }
-
-        $data = $this->read();
-
-        if (is_null($data)) {
-            $data = [];
-        }
-
-        $param['read_time'] = date('Y-m-d H:i:s');
-
-        $param = array_merge($data, [$param]);
-
-        $json = json_encode($param, JSON_UNESCAPED_UNICODE);
-
-        $file = fopen($this->fileUrl, 'w') or exit('文件不存在');
-
-        fwrite($file, $json);
+        $file_path = APP_PAHT.'/log/'.date('Y_m_d').'.log';
+        $file = fopen($file_path, "w");
+        $text = date('Y-m-d H:i:s').':'.$msg.json_encode($log,JSON_UNESCAPED_UNICODE);
+        fwrite($file,$text );
         fclose($file);
-
-        return true;
-    }
-
-    /**
-     * 读取文件.
-     *
-     * @return false|mixed|string
-     */
-    public function read()
-    {
-        $file_url = $this->log.'/'.$this->fileName;
-        $fh = fopen($file_url, 'r');
-        $data = fgets($fh);
-        fclose($fh);
-        $data = json_decode($data, true);
-
-        return $data;
     }
 }

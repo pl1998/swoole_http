@@ -11,5 +11,11 @@ define('APP_DIR', __DIR__);
 define('APP_CONFIG',__DIR__.'/config');
 
 use app\ServerQueue;
-echo "tcp服务启动成功--";
-new ServerQueue();
+
+try {
+    new ServerQueue();
+    echo "tcp启动成功~~~";
+}catch (\Exception $exception){
+    echo "Tcp ERROR---:".$exception->getMessage();
+}
+

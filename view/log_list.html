@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>swoole异步日志列表</title>
+</head>
+<!-- 引入样式 -->
+<link href="https://cdn.bootcss.com/element-ui/2.4.5/theme-chalk/index.css" rel="stylesheet">
+
+<body>
+<div id="app">
+    <h2 style="text-align: center">swoole接口日志</h2>
+    <div class="block ">
+        <h5 class="demonstration">选择需要查询的时间日期</h5>
+        <el-date-picker
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                v-model="searchTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+        </el-date-picker>
+        <el-button type="primary" icon="el-icon-search" @click="search()" circle></el-button>
+    </div>
+
+    <br/>
+    <el-table
+            :data="tableData"
+            style="width: 100%">
+
+        <el-table-column
+                prop="email"
+                label="email"
+                width="180">
+        </el-table-column>
+        <el-table-column
+                prop="time"
+                label="时间发送间隔"
+                width="180">
+        </el-table-column>
+        <el-table-column
+                prop="content"
+                label="日志错误信息">
+        </el-table-column>
+        <el-table-column
+                prop="api_url"
+                label="错误api">
+        </el-table-column>
+        <el-table-column
+                prop="read_time"
+                label="邮件发送时间">
+        </el-table-column>
+    </el-table>
+
+<!--    <el-pagination-->
+<!--            :hide-on-single-page="value"-->
+<!--            :total="5"-->
+<!--            layout="prev, pager, next">-->
+<!--    </el-pagination>-->
+</div>
+<!-- 引入组件库 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/2.4.5/index.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0/axios.js"></script>
+<script>
+    new Vue({
+        el:'#app',
+        data:function () {
+            return {
+                validate:false,
+                tableData: [
+                ],
+                value:undefined,
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+                searchTime:[]
+
+            }
+        },
+        created:function () {
+            this.getLog();
+        },
+        methods:{
+            getLog:function () {
+                axios.get("api/get_log", {
+                    params: {
+                        startTime: this.searchTime[0],
+                        endTime: this.searchTime[1]
+                    }
+                }).then(response => {
+                    let res = response.data;
+                    this.tableData = res.data
+                }).catch(error => {
+                    console.log(error);
+                });
+            },
+            search:function () {
+                if(this.searchTime[0] == undefined || this.searchTime[1] ==  undefined){
+
+                    this.$message({
+                        showClose: true,
+                        message: '请选择日期',
+                        type: 'error'
+                    });
+                }else {
+                  this.getLog()
+                }
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

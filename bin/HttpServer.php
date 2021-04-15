@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Created by PhpStorm
  * User: pl
@@ -16,85 +17,45 @@ use Swoole\Http\Server;
  */
 class HttpServer
 {
-
     /**
      * @var Server
      */
     protected $server;
 
+    protected $config=[];
+
     /**
+     * 初始化加载配置并实例话HTTP服务类
      * HttpServer constructor.
      */
     public function __construct()
     {
-        $config = require APP_CONFIG.'/server.php';
+        //获取服务端配置
+        $config = config('server');
         $config = $config['http'];
-
         $this->server = new Server($config['host'],$config['port']);
     }
-
     /**
-     * 服务响应
+     * 监听HTTP请求并响应
      * @return $this
      */
     public function httpRequest()
     {
         $this->server->on('request',function ($request, $response){
-
-            $url    = $request->server['request_uri'];
-
-            $method = $request->server['request_method'];
-
-            $route = require APP_ROUTE.'/api.php';
-
-            if(!array_key_exists($method,$route)) {
-                $response->header('Content-Type', 'text/html');
-                $html = file_get_contents(__DIR__.'/view/404.html');
-                $response->end($html);
+            //执行路由单例分发HTTP请求到控制器
+            if($request->server['request_uri']!='/favicon.ico'){
+                $cache = memory_get_usage();
+                echo "当前使用内存:".$cache."\n";
             }
-            //简单的路由控制
-
-            switch ($url) {
-                case '/favicon.ico':
-                    //设置网址图标
-                    $response->sendfile(__DIR__.'/static/favicon.ico');
-                    break;
-                case '/get_log':
-                    $response->header('Content-Type', 'text/html');
-                    $html = file_get_contents(__DIR__.'/view/log_list.html');
-                    $response->end($html);
-                    break;
-                case '/api/get_log':
-                    $response->header('Content-Type', 'application/json');
-                    if($method == 'GET') {
-                        $params = $request->get;
-                        $db = new SearchDb();
-                        if(!empty($params['startTime']) && !empty($params['endTime'])) {
-                            $json_data = $db->queryLog($params['startTime'],$params['endTime']);
-                        } else {
-                            $json_data = $db->defaule();
-                        }
-                        $response->end($json_data);
-                    } else {
-                        $params = $request->post;
-                        $client = new Client(json_encode($params,JSON_UNESCAPED_UNICODE));
-                        $client->connect();
-                        $response->header('Content-Type', 'application/json');
-                        $response->end(json_encode(['status'=>200,'err_msg'=>'success']));
-                    }
-                    break;
-            }
+             Route::init()->checkRoute($request,$response);
         });
         return $this;
     }
-
-
     /**
-     * 启动服务
+     * 启动Http服务
      */
     public function start()
     {
         $this->server->start();
     }
-
 }
