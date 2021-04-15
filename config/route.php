@@ -12,6 +12,7 @@ return [
   'GET'  => [
       '/favicon.ico'=>false,
       '/'=>[\app\controller\IndexController::init(),'index'],
+      '/api/create'=>[\app\controller\IndexController::init(),'create'],
   ],
   'POST' => [
 

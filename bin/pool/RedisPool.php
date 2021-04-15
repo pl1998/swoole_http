@@ -11,15 +11,5 @@ namespace app\pool;
 
 class RedisPool
 {
-    protected static $config;
 
-    protected function __construct()
-    {
-
-    }
-
-    public static function init()
-    {
-
-    }
 }

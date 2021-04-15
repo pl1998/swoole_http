@@ -8,124 +8,62 @@ declare(strict_types=1);
  **/
 namespace app\pool;
 
-use Swoole\Coroutine;
-use Swoole\Database\PDOConfig;
-use Swoole\Database\PDOPool;
-use Swoole\Database\MysqliConfig;
-use Swoole\Database\MysqliPool;
-use Swoole\Runtime;
 
 /**
  * Class DbPool
  * @package app\pool
  */
-class DbPool implements Mysql
+class DbPool
 {
-    private static $db;
-    private array  $config;
-    public $pool;
+    use DB;
+    protected $pool;
+    private $db;
+    protected $tables;
 
-    private function __construct()
+    public function __construct()
     {
-        echo "加载数据库单例\n";
-        $this->config = config('database.mysql');
-        //一键协程开启异步io
-        if(is_object($this->pool)) {
-            $this->pool = $this->conn();
+        $config = config('database.mysql');
+        if(in_array('PDO',get_loaded_extensions())){
+            $this->pool = PDO::getInstance($config);
+        }elseif(in_array('mysqli',get_loaded_extensions())) {
+            $this->pool = Mysqli::getInstance($config);
+        }else{
+            throw new \RuntimeException('请检查mysql扩展');
         }
+    }
+
+    public function getConn()
+    {
+       $this->db =  $this->pool->conn();
+    }
+
+    public function table(string $table)
+    {
+        $this->tables = $table;
         return $this;
     }
-    public static function init()
-    {
-        static::$db = new self();
-        if(is_null(static::$db)) {
-            echo "加载数据库链接池单例\n";
 
-        }
-        return new self();
-    }
-    /**
-     * 启动mysql连接池
-     * @return mixed
-     */
-    public function conn()
+    public function insert(array $array) :int
     {
-        if(in_array('PDO',get_loaded_extensions())){
-            Runtime::enableCoroutine();
-            return Coroutine\run(function () {
-                $pool = new PDOPool((new PDOConfig())
-                    ->withHost($this->config['host'])
-                    ->withPort($this->config['port'])
-                    ->withDbName($this->config['dbname'])
-                    ->withCharset($this->config['coding'])
-                    ->withUsername($this->config['username'])
-                    ->withPassword($this->config['password'])
-                ,$this->config['size']);
-                return $pool;
-            });
-        }
-        if(in_array('mysqli',get_loaded_extensions())){
-            Runtime::enableCoroutine();
-            return Coroutine\run(function () {
-                $pool = new MysqliPool((new MysqliConfig())
-                    ->withHost($this->config['host'])
-                    ->withPort($this->config['port'])
-                    ->withDbName($this->config['dbname'])
-                    ->withCharset($this->config['coding'])
-                    ->withUsername($this->config['username'])
-                    ->withPassword($this->config['password'])
-                ,$this->config['size']);
-                return $pool;
-            });
-        }
-        throw new \RuntimeException('请检查mysql连接扩展');
+        $this->getConn();
+
+        $query = $this->arrayToSql($array);
+
+        $statement = $this->db->prepare($query);
+
+        $statement->execute();
+
+        $ret = (int) $this->db->lastInsertId();
+
+        $this->release($this->db);
+
+        return $ret;
     }
 
-    /**
-     * 获取连接
-     * @return mixed
-     */
-    public function get()
+    public function release(object $db)
     {
-       return $this->pool->get();
+        $this->pool->close($db);
+        return true;
     }
 
-    /**
-     * 归还连接
-     * @param object $pdo
-     * @return mixed
-     */
-    public function put(object $pdo)
-    {
-        return $this->pool->put($pdo);
-    }
-
-    /**
-     * t填充连接池
-     * @return mixed
-     */
-    public function fill()
-    {
-        return $this->pool->fill();
-    }
-
-    /**
-     * 关闭连接
-     * @param object $pdo
-     * @return mixed
-     */
-    public function close(object $pdo)
-    {
-        return $this->pool->close($pdo);
-    }
-
-    /**
-     * 执行查询语句
-     * @param string $sql
-     * @return mixed
-     */
-    public function prepare(string $sql)
-    {
-        return $this->pool->prepare($sql);
-    }
 }

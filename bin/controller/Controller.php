@@ -13,15 +13,5 @@ use Swoole\Exception;
 
 class Controller
 {
-    public static function init()
-    {
-        $self = new self();
-        return $self;
-    }
-
-    public function __call($method, $parameters)
-    {
-       throw new Exception('未找到该方法');
-
-    }
+    use Response;
 }

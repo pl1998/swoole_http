@@ -116,11 +116,8 @@ if(!function_exists('get')){
     }
 }
 
-/**
- *
- */
 if(!function_exists('success')){
-    function success(array $data=[],int $code=200,string $message='success')
+    function success(array $data=[],string $message='success',int $code=200)
     {
         return json_encode([
             'code'=>$code,
