@@ -39,11 +39,19 @@ class PDO implements Mysql
         return static::$instance;
     }
 
+    /**
+     * 启动连接
+     * @return \PDO|\Swoole\Database\PDOProxy
+     */
     public function conn()
     {
         return $this->pool->get();
     }
 
+    /**
+     * 归还连接
+     * @param object $pdo
+     */
     public function close(object $pdo)
     {
         return $this->pool->put($pdo);

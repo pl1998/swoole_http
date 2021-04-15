@@ -1,26 +1,33 @@
-## 基于swoole的HTTP服务器
+## 基于swoole搭建的一个高性能的HTTP服务器
 
 #### 目录结构
 ```shell script
-├── README.md 
-├── bin  
+├── README.md
+├── bin
 │   ├── Client.php
+│   ├── Command.php
 │   ├── HttpServer.php
 │   ├── Log.php
 │   ├── Route.php
 │   ├── ServerQueue.php
 │   ├── controller
 │   │   ├── Controller.php
-│   │   └── IndexController.php
+│   │   ├── IndexController.php
+│   │   └── Response.php
 │   ├── exception
 │   │   └── HttpException.php
 │   ├── pool
+│   │   ├── DB.php
 │   │   ├── DbPool.php
+│   │   ├── Mysql.php
+│   │   ├── Mysqli.php
+│   │   ├── PDO.php
 │   │   └── RedisPool.php
 │   ├── queue
 │   │   └── Queue.php
-│   └── static
-│       └── favicon.ico
+│   ├── static
+│   │   └── favicon.ico
+│   └── utility
 ├── composer.json
 ├── composer.lock
 ├── config
@@ -29,48 +36,172 @@
 │   ├── log.php
 │   ├── route.php
 │   └── server.php
-├── helpers.php           
-├── http.php              
-├── tcp.php           
-├── test.php 
-└── view 
+├── docs
+├── helpers.php
+├── http.php
+├── tcp.php
+├── test
+├── test.php
+└── view
     ├── 404.html
     ├── echarts.html
     └── log_list.html
 ```
 
 #### 功能简洁
+  * 使用大量单例 避免使用 `static`属性 PHP全局变量产生内存泄漏问题
+  * 支持简单的路由分发\控制 简洁的控制器
+  * 支持redis、mysql连接池 实现了curd 以及事务操作
 
-  * http服务 、tcp服务、邮件异步发送、日志异步存储、简洁vue界面
-  * 文件json式存储，提供简单的日期查询条件
-  * 只需配置好配置文件 两行命令就能启动
+#### 要求
 
-#### 安装需求
-  
-   * 安装了swoole扩展
-
-#### 如何启动？
-```shell script
-
-git clone https://github.com/pl1998/swoole_log.git
-
-cd swoole_log
-
-
-php --ri swoole 
-
-// 测试环境 laradock
-
-// 启动http服务
-
+   * php版本>=7.3
+   * swoole4
+   
+#### 安装使用
+```
+get clone https://github.com/pl1998/swoole_http.git
 php http.php
+```   
 
-// 启动tcp服务
-
-php tcp.php
+#### 全局辅助函数文件 `helpers.php 通过`composer.json`文件 中`autoload` 实现了自动加载
+    * 主要实现一些全局函数 读取视图函数 view()  读取配置函数 config()
+```json
+    ...
+   "autoload": {
+        "psr-4": {
+            "app\\": "bin" //主目录自动加载 映射命名空间
+        },
+        "files": [
+            "helpers.php"
+        ]
+    }
+    ...
 ```
 
-#### 简单配置`config/server.php`服务端口
+#### 配置文件
+```shell script
+├── config
+│   ├── database.php //数据库配置
+│   ├── email.php    //邮件配置
+│   ├── log.php      //日志驱动
+│   ├── route.php    //路由文件
+│   └── server.php  //tcp http 配置以及端口
+```
+
+#### 新增路由 `router.php`
+
+```php
+/**
+ * 路由配置
+ */
+return [
+  'GET'  => [
+      '/favicon.ico'=>false,
+      //访问路径 => 实例控制器 方法名 
+      '/api/test'=>[\app\controller\TestController::init(),'test'],
+  ],
+  'POST' => [
+
+  ],
+  'PUT'  => [
+
+  ],
+  'DELETE' => [
+
+  ]
+];
+
+```
+#### 控制器
+```php
+namespace app\controller;
+
+use app\pool\DbPool;
+
+class TestController
+{
+
+    //每个控制器都应该有的单例
+    protected static $init;
+
+    public static function init()
+    {
+        if(is_null(static::$init)) {
+            echo "加载控制器单例"."\n";
+            static::$init = new self();
+        }
+        return static::$init;
+    }
+    
+    //拿到请求和响应
+    public function test(object $request,object $response)
+    {
+           //业务逻辑
+                  $db = new DbPool();
+          
+          
+                  $id = $db->table('users')->insert([
+                      'name'=>'latent',
+                      'password'=>'',
+                      'avatar'=>'',
+                      'email'=>'pltruenine@163.com',
+                      'created_at'=>date('Y-m-d H:i:s'),
+                      'updated_at'=>date('Y-m-d H:i:s'),
+                      'uid'=>'56895',
+                      'age'=>22,
+                  ]);
+                 
+                  $response->header('Content-Type','application/json');
+                  $response->end(success([
+                      'id'=>$id
+                  ],'插入成功'));
+
+    }
+}
+```
+#### 启动服务器
+```shell script
+php http.php
+---------------
+$ php http.php 
+0.0.0.0:9501
+
+
+```
+#### 浏览器访问[0.0.0.0:9501](http://0.0.0.0:9501/api/test) 尝试多请求几次
+
+![file](./docs/WechatIMG253.png)
+
+####命令行
+```shell script
+$ php http.php
+0.0.0.0:9501
+当前使用内存:1489312
+加载路由单例
+加载Index控制器单例
+加载Test控制器单例
+当前使用内存:1584304
+当前使用内存:1584304
+当前使用内存:1584304
+当前使用内存:1584304
+当前使用内存:1584304
+当前使用内存:1584304
+当前使用内存:1584304
+```
+#### 开始测试
+```shell script
+wrk -t4 -c50 -d30 http://127.0.0.1:9501/api/test
+```
+
+![file](./docs/WechatIMG254.png)
 
 
 
+![file](./docs/WechatIMG255.jpeg)
+
+
+
+#### 此时已经插入了3万多条数据了
+
+![file](./docs/WechatIMG256.png)

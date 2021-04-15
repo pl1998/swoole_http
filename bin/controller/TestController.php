@@ -1,36 +1,31 @@
 <?php
-declare(strict_types=1);
 /**
  * Created By PhpStorm.
  * User : Latent
- * Date : 2021/4/13
- * Time : 5:26 下午
+ * Date : 2021/4/15
+ * Time : 2:20 下午
  **/
 
 namespace app\controller;
 
-
 use app\pool\DbPool;
 
-class IndexController
+class TestController
 {
+
     //每个控制器都应该有的单例
     protected static $init;
 
     public static function init()
     {
-       if(is_null(static::$init)) {
-           echo "加载Index控制器单例"."\n";
-           static::$init = new self();
-       }
-       return static::$init;
+        if(is_null(static::$init)) {
+            echo "加载Test控制器单例"."\n";
+            static::$init = new self();
+        }
+        return static::$init;
     }
 
-    /**
-     * @param object $request
-     * @param object $response
-     */
-    public function index(object $request,object $response)
+    public function test(object $request,object $response)
     {
         //业务逻辑
         $db = new DbPool();
@@ -50,13 +45,6 @@ class IndexController
         $response->header('Content-Type','application/json');
         $response->end(success([
             'id'=>$id
-        ],'插入成功'));
-    }
-
-    public function create(object $request,object $response)
-    {
-        $response->end(success([
-            'id'=>3
         ],'插入成功'));
     }
 }
